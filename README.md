@@ -40,8 +40,32 @@ PUBLIC_INFO=false
 DEBUG=false
 ```
 ---
+### 4. Adapt `main.js` file
+To connect the bot to your own server, modify the following values:
+```bash
+host: 'trupiloztaerzi.aternos.me',
+username: 'AntiAFKBot',
+```
+---
 ## Usage
 To start the bot:
 ```bash
 node main.js
+```
+### (Inside game usage) :
+To make the bot sleep:
+```bash
+bot sleep
+```
+To make the bot eat:
+```bash
+bot eat
+```
+To know the bot's position:
+```bash
+bot position
+```
+To know the bot's stats:
+```bash
+bot stats
 ```
