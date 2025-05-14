@@ -28,14 +28,12 @@ function createBot() {
     if (username === bot.username) return
 
     if (message === 'bot stats') {
-      const health = bot.health
-      const food = bot.food
-      const healthBars = Math.floor(health / 2)
-      const hungerBars = Math.floor(food / 2)
+      const healthBars = Math.floor(bot.health / 2)
+      const hungerBars = Math.floor(bot.food / 2)
       let hungerDescription = 'Full'
-      if (food < 20 && food >= 14) hungerDescription = 'Satisfied'
-      else if (food < 14 && food >= 7) hungerDescription = 'Hungry'
-      else if (food < 7) hungerDescription = 'Starving'
+      if (bot.food < 20 && bot.food >= 14) hungerDescription = 'Satisfied'
+      else if (bot.food < 14 && bot.food >= 7) hungerDescription = 'Hungry'
+      else if (bot.food < 7) hungerDescription = 'Starving'
       bot.chat(`Health: ${healthBars}/10 | Hunger: ${hungerDescription} (${hungerBars}/10)`)
     }
 
@@ -50,10 +48,7 @@ function createBot() {
         maxDistance: 16
       })
 
-      if (!bed) {
-        bot.chat("No bed found nearby")
-        return
-      }
+      if (!bed) return bot.chat("No bed found nearby")
 
       try {
         await bot.pathfinder.goto(new GoalNear(bed.position.x, bed.position.y, bed.position.z, 1))
@@ -70,23 +65,18 @@ function createBot() {
         maxDistance: 8
       })
 
-      if (!chestToUse) {
-        bot.chat("No chest nearby to eat from")
-        return
-      }
+      if (!chestToUse) return bot.chat("No chest nearby to eat from")
 
       try {
         await bot.pathfinder.goto(new GoalNear(chestToUse.position.x, chestToUse.position.y, chestToUse.position.z, 1))
         const chest = await bot.openChest(bot.blockAt(chestToUse.position))
-
         const foodItem = chest.containerItems().find(item =>
           item.name.includes('bread') || item.name.includes('apple') || item.name.includes('steak') || item.name.includes('carrot')
         )
 
         if (!foodItem) {
           chest.close()
-          bot.chat("No food found in the chest")
-          return
+          return bot.chat("No food found in the chest")
         }
 
         await chest.withdraw(foodItem.type, null, 1)
@@ -120,12 +110,20 @@ function createBot() {
   bot.on('error', (err) => {
     console.log('Error detected:', err.message)
 
-    if (!retrying && err.message.includes('ENOTFOUND')) {
-      console.log('Server seems offline. Attempting to start it...')
+    if (!retrying && (err.message.includes('ENOTFOUND') || err.message.includes('ECONNRESET'))) {
+      console.log('Server might be offline or resetting. Attempting to start it...')
       retrying = true
 
-      exec('node aternosAPI/src/index.js --start', (error, stdout, stderr) => {
-        setTimeout(createBot, 30000) // retry after 30 seconds
+      exec('node index.js --start', (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Start script error: ${error.message}`)
+        }
+        if (stderr) {
+          console.error(`Start script stderr: ${stderr}`)
+        }
+        console.log(`Start script stdout: ${stdout}`)
+        console.log('Waiting 30 seconds before retrying connection...')
+        setTimeout(createBot, 30000)
       })
     }
   })

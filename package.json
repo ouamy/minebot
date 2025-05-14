@@ -26,6 +26,8 @@
     "express": "^4.17.1",
     "gamedig": "^2.0.23",
     "jsonwebtoken": "^9.0.2",
+    "mineflayer": "^4.25.0",
+    "mineflayer-pathfinder": "^2.4.5",
     "puppeteer": "^5.5.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-adblocker": "^2.12.0",
