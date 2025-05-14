@@ -53,14 +53,18 @@ To start the bot:
 node main.js
 ```
 ### (Inside game usage) :
-To make the bot sleep:
-Place a bed next to him.
+#### To make the bot sleep:
+---
+#### Place a bed next to him.
+---
 Then say:
 ```bash
 bot sleep
 ```
-To make the bot eat:
-Place a chest next to him and fill it with food items like bread, apples, steak, or carrots.
+#### To make the bot eat:
+---
+#### Place a chest next to him and fill it with food items like bread, apples, steak, or carrots.
+---
 Then say:
 ```bash
 bot eat
